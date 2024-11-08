@@ -9,7 +9,6 @@ import logging
 
 
 CITIES = ['London', 'New York', 'Tokyo', 'Sydney', 'Paris']
-API_KEY = '1a13bf4cca15e0fd022e4cc052c15332'  # Set this in Airflow Variables
 BASE_URL = "http://api.openweathermap.org/data/2.5/weather"
 
 def fetch_weather_data(**context):
