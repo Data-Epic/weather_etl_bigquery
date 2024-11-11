@@ -1,0 +1,36 @@
+version: '3'
+services:
+  airflow-webserver:
+    build: .
+    command: webserver
+    ports:
+      - 8080:8080
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=sqlite:////opt/airflow/airflow.db
+      - GOOGLE_APPLICATION_CREDENTIALS=/opt/airflow/google_credentials.json
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+      - ./google_credentials.json:/opt/airflow/google_credentials.json
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    restart: always
+
+  airflow-scheduler:
+    build: .
+    command: scheduler
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=sqlite:////opt/airflow/airflow.db
+      - GOOGLE_APPLICATION_CREDENTIALS=/opt/airflow/google_credentials.json
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+      - ./google_credentials.json:/opt/airflow/google_credentials.json
+    restart: always
